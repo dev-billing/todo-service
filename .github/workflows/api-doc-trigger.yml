@@ -1,0 +1,69 @@
+name: API Doc Auto Generation
+
+on:
+  # PR merge 시 자동 트리거 (diff 기반)
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+      - develop
+
+  # 기존 API 문서 없을 때 수동 실행 (코드 기반)
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "코드를 읽을 브랜치"
+        required: true
+        default: "master"
+      api_paths:
+        description: "쉼표로 구분된 API 파일 경로 (예: src/main/.../OrderController.java)"
+        required: true
+      url_hint:
+        description: "위키 경로 힌트 (internal / external / 비워두면 자동)"
+        required: false
+        default: ""
+
+jobs:
+  # ── PR merge 자동 트리거 ──────────────────────────────────────────
+  generate-from-diff:
+    name: Generate Doc from Diff
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    uses: dev-billing/shared-workflows/.github/workflows/reusable-doc-from-diff.yml@main
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      repo_name: ${{ github.repository }}
+    secrets: inherit
+
+  publish-diff-doc:
+    name: Publish Diff-based Doc to Dooray
+    needs: generate-from-diff
+    if: needs.generate-from-diff.outputs.skipped != 'true'
+    uses: dev-billing/shared-workflows/.github/workflows/reusable-publish-to-dooray.yml@main
+    with:
+      title: ${{ needs.generate-from-diff.outputs.title }}
+      doc_content: ${{ needs.generate-from-diff.outputs.doc_content }}
+      url_hint: ${{ needs.generate-from-diff.outputs.url_hint }}
+    secrets: inherit
+
+  # ── 수동 실행 (코드 기반) ─────────────────────────────────────────
+  generate-from-code:
+    name: Generate Doc from Code
+    if: github.event_name == 'workflow_dispatch'
+    uses: dev-billing/shared-workflows/.github/workflows/reusable-doc-from-code.yml@main
+    with:
+      repo_name: ${{ github.repository }}
+      branch: ${{ inputs.branch }}
+      api_paths: ${{ inputs.api_paths }}
+      url_hint: ${{ inputs.url_hint }}
+    secrets: inherit
+
+  publish-code-doc:
+    name: Publish Code-based Doc to Dooray
+    needs: generate-from-code
+    if: github.event_name == 'workflow_dispatch'
+    uses: dev-billing/shared-workflows/.github/workflows/reusable-publish-to-dooray.yml@main
+    with:
+      title: ${{ needs.generate-from-code.outputs.title }}
+      doc_content: ${{ needs.generate-from-code.outputs.doc_content }}
+      url_hint: ${{ needs.generate-from-code.outputs.url_hint }}
+    secrets: inherit
