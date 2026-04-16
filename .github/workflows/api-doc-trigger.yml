@@ -1,14 +1,14 @@
 name: API Doc Auto Generation
 
 on:
-  # PR merge 시 자동 트리거 (diff 기반)
+  # PR merge 시 자동 트리거 (삭제된 API Deprecated 처리)
   pull_request:
     types: [closed]
     branches:
       - master
       - develop
 
-  # 기존 API 문서 없을 때 수동 실행 (코드 기반)
+  # 신규 API 문서 수동 생성 (코드 기반)
   workflow_dispatch:
     inputs:
       branch:
@@ -27,9 +27,9 @@ on:
         default: ""
 
 jobs:
-  # ── PR merge 자동 트리거 ──────────────────────────────────────────
-  generate-from-diff:
-    name: Generate Doc from Diff
+  # ── PR merge 자동 트리거: 삭제된 엔드포인트 감지 ──────────────────────
+  detect-deleted:
+    name: Detect Deleted Endpoints
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     uses: dev-billing/shared-workflows/.github/workflows/reusable-doc-from-diff.yml@main
     with:
@@ -39,50 +39,18 @@ jobs:
 
   handle-deprecated:
     name: Handle Deprecated APIs
-    needs: generate-from-diff
+    needs: detect-deleted
     if: |
       github.event_name == 'pull_request' &&
       github.event.pull_request.merged == true &&
-      needs.generate-from-diff.outputs.has_deleted_endpoints == 'true'
+      needs.detect-deleted.outputs.has_deleted_endpoints == 'true'
     uses: dev-billing/shared-workflows/.github/workflows/reusable-deprecated-handler.yml@main
     with:
       repo_name: ${{ github.repository }}
-      deleted_endpoints: ${{ needs.generate-from-diff.outputs.deleted_endpoints }}
+      deleted_endpoints: ${{ needs.detect-deleted.outputs.deleted_endpoints }}
     secrets: inherit
 
-  create-draft-diff:
-    name: Create Dooray Draft (Diff)
-    needs: generate-from-diff
-    if: needs.generate-from-diff.outputs.skipped != 'true'
-    uses: dev-billing/shared-workflows/.github/workflows/reusable-publish-to-dooray.yml@main
-    with:
-      title: ${{ needs.generate-from-diff.outputs.title }}
-      doc_content: ${{ needs.generate-from-diff.outputs.doc_content }}
-      url_hint: ${{ needs.generate-from-diff.outputs.url_hint }}
-      api_key: ${{ needs.generate-from-diff.outputs.api_key }}
-      repo_name: ${{ github.repository }}
-    secrets: inherit
-
-  wait-approval-diff:
-    name: "[검토] Dooray Draft 확인 후 Approve"
-    needs: create-draft-diff
-    environment: api-doc-approval
-    runs-on:
-      group: billing-dev
-    steps:
-      - name: 안내
-        run: echo "Dooray Draft를 검토한 뒤 이 화면에서 Approve를 눌러주세요."
-
-  publish-final-diff:
-    name: Publish to Dooray Wiki (Diff)
-    needs: [generate-from-diff, create-draft-diff, wait-approval-diff]
-    uses: dev-billing/shared-workflows/.github/workflows/reusable-publish-final.yml@main
-    with:
-      api_key: ${{ needs.create-draft-diff.outputs.api_key }}
-      repo_name: ${{ github.repository }}
-    secrets: inherit
-
-  # ── 수동 실행 (코드 기반) ─────────────────────────────────────────
+  # ── 수동 실행: 코드 기반 문서 생성 ────────────────────────────────────
   generate-from-code:
     name: Generate Doc from Code
     if: github.event_name == 'workflow_dispatch'
