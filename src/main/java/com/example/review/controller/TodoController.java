@@ -17,11 +17,6 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/searchAll")
-    public List<TodoResponse> getAll() {
-        return todoService.findAll();
-    }
-
     @GetMapping("/get/{id}")
     public TodoResponse getById(@PathVariable Long id) {
         return todoService.findById(id);
