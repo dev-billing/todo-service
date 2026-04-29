@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - develop
+      - test/api-doc-workflow
 
   workflow_dispatch:
     inputs:
