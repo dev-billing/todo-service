@@ -17,18 +17,18 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public TodoResponse getById(@PathVariable Long id) {
         return todoService.findById(id);
     }
 
-    @PostMapping("/insert")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
         return todoService.create(request);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public TodoResponse update(@PathVariable Long id, @RequestBody TodoUpdateRequest request) {
         return todoService.update(id, request);
     }
