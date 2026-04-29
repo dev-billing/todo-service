@@ -86,4 +86,5 @@ jobs:
     with:
       api_key: ${{ needs.create-draft-from-code.outputs.api_key }}
       repo_name: ${{ github.repository }}
+      draft_page_id: ${{ needs.create-draft-from-code.outputs.draft_page_id }}
     secrets: inherit
