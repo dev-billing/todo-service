@@ -101,18 +101,4 @@ public class ExternalTodoController {
         return todoService.update(id, request, fields);
     }
 
-    /**
-     * Todo 삭제
-     * @apiScope external
-     *
-     * 지정한 ID의 Todo 항목을 영구 삭제합니다.
-     * 삭제된 항목은 복구할 수 없습니다.
-     *
-     * @param id 삭제할 Todo의 고유 식별자
-     */
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        todoService.delete(id);
-    }
 }
