@@ -101,4 +101,28 @@ public class ExternalTodoController {
         return todoService.update(id, request, fields);
     }
 
+    /**
+     * Todo 키워드 검색
+     * @apiScope external
+     *
+     * 제목 또는 내용에 키워드가 포함된 Todo 목록을 반환합니다.
+     * 상태 필터를 함께 지정하면 해당 상태의 항목만 조회합니다.
+     *
+     * @param keyword 제목/내용에 포함될 검색어 (대소문자 무시)
+     * @param status 필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체
+     * @return 키워드와 일치하는 Todo 목록
+     */
+    @GetMapping("/find")
+    public List<TodoResponse> findByKeyword(
+            @RequestParam String keyword,
+            @RequestParam(required = false) TodoStatus status) {
+        List<TodoResponse> source = (status != null)
+                ? todoService.findAllByStatus(status)
+                : todoService.findAll();
+        String needle = keyword.toLowerCase();
+        return source.stream()
+                .filter(t -> (t.getTitle() != null && t.getTitle().toLowerCase().contains(needle))
+                        || (t.getContent() != null && t.getContent().toLowerCase().contains(needle)))
+                .toList();
+    }
 }
