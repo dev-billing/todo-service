@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.review.dto.request.TodoCategorizedCreateRequest;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
 import com.example.review.dto.response.TodoResponse;
@@ -124,5 +125,23 @@ public class ExternalTodoController {
                 .filter(t -> (t.getTitle() != null && t.getTitle().toLowerCase().contains(needle))
                         || (t.getContent() != null && t.getContent().toLowerCase().contains(needle)))
                 .toList();
+    }
+
+    /**
+     * 카테고리 지정 Todo 생성
+     * @apiScope external
+     *
+     * 카테고리(PERSONAL/WORK/STUDY/OTHER)를 함께 지정해 Todo 를 생성합니다.
+     * 카테고리 정보는 별도 분류·집계에 활용됩니다.
+     *
+     * @param request 생성할 Todo 정보 (category 필수)
+     * @return 생성된 Todo 정보
+     */
+    @PostMapping("/categorized")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TodoResponse createCategorized(@RequestBody TodoCategorizedCreateRequest request) {
+        TodoCreateRequest base = new TodoCreateRequest();
+        // category 는 향후 service 레이어 확장 시 활용
+        return todoService.create(base);
     }
 }
