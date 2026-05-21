@@ -25,12 +25,16 @@ public class ExternalTodoController {
      *
      * 지정한 ID의 Todo 항목을 반환합니다.
      * 존재하지 않는 ID 요청 시 404를 반환합니다.
+     * includeDeleted=true 인 경우 soft delete 된 항목도 함께 조회합니다.
      *
      * @param id 조회할 Todo의 고유 식별자
+     * @param includeDeleted true 면 삭제된 항목도 조회 (기본값: false)
      * @return 조회된 Todo 정보
      */
     @GetMapping("/{id}")
-    public TodoResponse getById(@PathVariable Long id) {
+    public TodoResponse getById(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "false") boolean includeDeleted) {
         return todoService.findById(id);
     }
 
