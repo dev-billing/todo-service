@@ -75,6 +75,7 @@ public class ExternalTodoController {
      * 새로운 Todo 항목을 생성합니다.
      * 생성된 항목의 초기 상태는 TODO입니다.
      *
+     * @body request 생성할 Todo 정보 (title, content, dueDate, priority)
      * @return 생성된 Todo 정보
      */
     @PostMapping("/create")
@@ -90,8 +91,9 @@ public class ExternalTodoController {
      * 지정한 ID의 Todo 항목을 수정합니다.
      * fields 파라미터로 수정할 필드를 한정할 수 있으며, 미입력 시 전체 필드를 덮어씁니다.
      *
-     * @path  id      수정할 Todo의 고유 식별자
-     * @param fields  수정할 필드명 목록 (예: title,status), 미입력 시 전체 수정
+     * @path  id       수정할 Todo의 고유 식별자
+     * @param fields   수정할 필드명 목록 (예: title,status), 미입력 시 전체 수정
+     * @body  request  수정할 내용 (부분 수정 시 fields 와 함께 사용)
      * @return 수정된 Todo 정보
      */
     @PatchMapping("/{id}")
@@ -134,6 +136,7 @@ public class ExternalTodoController {
      * 카테고리(PERSONAL/WORK/STUDY/OTHER)를 함께 지정해 Todo 를 생성합니다.
      * 카테고리 정보는 별도 분류·집계에 활용됩니다.
      *
+     * @body request 카테고리 포함 Todo 정보 (title, content, dueDate, priority, category)
      * @return 생성된 Todo 정보
      */
     @PostMapping("/categorized")
