@@ -42,19 +42,24 @@ public class ExternalTodoController {
     }
 
     /**
-     * Todo 통계 조회
+     * Todo 상태별 통계 조회
      * @apiScope external
      *
-     * 전체 또는 필터링된 Todo의 상태별 집계를 반환합니다.
+     * 전체 또는 필터링 조건에 부합하는 Todo 의 상태별 집계를 반환합니다.
+     * 삭제된(soft-delete) 항목은 기본적으로 집계에서 제외됩니다.
      *
-     * @param status        필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체
-     * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계, 미입력 시 전체
-     * @return 상태별 Todo 집계 (total, done, pending)
+     * @param status        필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체 상태 합산
+     * @param minPriority   이 값 이상의 우선순위만 집계 (1~5 권장), 미입력 시 전체
+     * @param includeDone   완료(DONE) 항목 포함 여부, 기본값 true
+     * @header X-Caller-Id   호출 시스템 식별자 (선택)
+     * @return 상태별 Todo 집계 (total / done / pending / overdue)
      */
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
-            @RequestParam(required = false) Integer minPriority) {
+            @RequestParam(required = false) Integer minPriority,
+            @RequestParam(required = false, defaultValue = "true") boolean includeDone,
+            @RequestHeader(value = "X-Caller-Id", required = false) String callerId) {
         List<TodoResponse> targets = (status != null)
                 ? todoService.findAllByStatus(status)
                 : todoService.findAll();
@@ -63,9 +68,17 @@ public class ExternalTodoController {
                     .filter(t -> t.getPriority() != null && t.getPriority() >= minPriority)
                     .toList();
         }
+        if (!includeDone) {
+            targets = targets.stream()
+                    .filter(t -> t.getStatus() != TodoStatus.DONE)
+                    .toList();
+        }
         long total = targets.size();
         long done = targets.stream().filter(t -> t.getStatus() == TodoStatus.DONE).count();
-        return Map.of("total", total, "done", done, "pending", total - done);
+        long overdue = targets.stream()
+                .filter(t -> t.getStatus() != TodoStatus.DONE)
+                .count();
+        return Map.of("total", total, "done", done, "pending", total - done, "overdue", overdue);
     }
 
     /**
