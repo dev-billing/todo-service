@@ -48,7 +48,7 @@ public class ExternalTodoController {
      * 전체 또는 필터링된 Todo의 상태별 집계를 반환합니다. 삭제된 항목은 집계에서 제외됩니다.
      *
      * @param status        필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체
-     * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계, 미입력 시 전체
+     * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계 (1~5 권장), 미입력 시 전체
      * @return 상태별 Todo 집계 (total, done, pending)
      */
     @GetMapping("/statistics")
