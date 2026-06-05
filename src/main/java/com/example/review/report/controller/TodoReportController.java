@@ -1,6 +1,5 @@
 package com.example.review.report.controller;
 
-import com.example.review.apidoc.ApiDocs;
 import com.example.review.dto.response.TodoResponse;
 import com.example.review.entity.Todo.TodoStatus;
 import com.example.review.service.TodoService;
@@ -30,7 +29,6 @@ public class TodoReportController {
      * @param status   집계할 상태값 (TODO / IN_PROGRESS / DONE)
      * @return 상태별 집계 결과
      */
-    @ApiDocs(title = "Todo 일일 리포트")
     @GetMapping("/daily")
     public Map<String, Long> dailyReport(@RequestParam TodoStatus status) {
         List<TodoResponse> targets = todoService.findAllByStatus(status);
@@ -45,7 +43,6 @@ public class TodoReportController {
      *
      * @return 우선순위별 건수 맵
      */
-    @ApiDocs(title = "Todo 우선순위 분포 리포트")
     @GetMapping("/priority-distribution")
     public Map<Integer, Long> priorityDistribution() {
         return todoService.findAll().stream()

@@ -1,6 +1,5 @@
 package com.example.review.controller;
 
-import com.example.review.apidoc.ApiDocs;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
 import com.example.review.dto.response.TodoResponse;
@@ -26,7 +25,6 @@ public class InternalTodoController {
      *
      * @return 전체 Todo 목록
      */
-    @ApiDocs
     @GetMapping
     public List<TodoResponse> getAll() {
         return todoService.findAll();
@@ -42,7 +40,6 @@ public class InternalTodoController {
      * @param id 조회할 Todo의 고유 식별자
      * @return 조회된 Todo 정보
      */
-    @ApiDocs
     @GetMapping("/{id}")
     public TodoResponse getById(@PathVariable Long id) {
         return todoService.findById(id);
@@ -58,7 +55,6 @@ public class InternalTodoController {
      * @param request 생성할 Todo 정보 (title 필수)
      * @return 생성된 Todo 정보
      */
-    @ApiDocs
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
@@ -75,7 +71,6 @@ public class InternalTodoController {
      * @param request 수정할 내용 (전체 필드 교체)
      * @return 수정된 Todo 정보
      */
-    @ApiDocs
     @PutMapping("/update/{id}")
     public TodoResponse update(@PathVariable Long id, @RequestBody TodoUpdateRequest request) {
         return todoService.update(id, request);
@@ -90,7 +85,6 @@ public class InternalTodoController {
      *
      * @param id 삭제할 Todo의 고유 식별자
      */
-    @ApiDocs
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

@@ -1,6 +1,5 @@
 package com.example.review.controller;
 
-import com.example.review.apidoc.ApiDocs;
 import com.example.review.dto.request.TodoCategorizedCreateRequest;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
@@ -34,7 +33,6 @@ public class ExternalTodoController {
      * @header X-Caller-Id    호출 시스템 식별자 (감사 로그 추적용)
      * @return 조회된 Todo 정보
      */
-    @ApiDocs(title = "Todo 단건 조회")
     @GetMapping("/{id}")
     public TodoResponse getById(
             @PathVariable Long id,
@@ -53,7 +51,6 @@ public class ExternalTodoController {
      * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계 (1~5 권장), 미입력 시 전체
      * @return 상태별 Todo 집계 (total, done, pending)
      */
-    @ApiDocs
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
@@ -81,7 +78,6 @@ public class ExternalTodoController {
      * @body request 생성할 Todo 정보 (title, content, dueDate, priority)
      * @return 생성된 Todo 정보
      */
-    @ApiDocs(title = "Todo 생성")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
@@ -100,7 +96,6 @@ public class ExternalTodoController {
      * @body  request  수정할 내용 (부분 수정 시 fields 와 함께 사용)
      * @return 수정된 Todo 정보
      */
-    @ApiDocs(title = "Todo 수정")
     @PatchMapping("/{id}")
     public TodoResponse update(
             @PathVariable Long id,
@@ -120,7 +115,6 @@ public class ExternalTodoController {
      * @param status   필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체
      * @return 키워드와 일치하는 Todo 목록
      */
-    @ApiDocs(title = "Todo 키워드 검색")
     @GetMapping("/find")
     public List<TodoResponse> findByKeyword(
             @RequestParam String keyword,
@@ -145,7 +139,6 @@ public class ExternalTodoController {
      * @body request 카테고리 포함 Todo 정보 (title, content, dueDate, priority, category)
      * @return 생성된 Todo 정보
      */
-    @ApiDocs(title = "카테고리 지정 Todo 생성")
     @PostMapping("/categorized")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse createCategorized(@RequestBody TodoCategorizedCreateRequest request) {
