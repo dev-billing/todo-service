@@ -81,6 +81,7 @@ public class ExternalTodoController {
      * @body request 생성할 Todo 정보 (title, content, dueDate, priority)
      * @return 생성된 Todo 정보
      */
+    @ApiDocs(title = "Todo 생성")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
@@ -99,6 +100,7 @@ public class ExternalTodoController {
      * @body  request  수정할 내용 (부분 수정 시 fields 와 함께 사용)
      * @return 수정된 Todo 정보
      */
+    @ApiDocs(title = "Todo 수정")
     @PatchMapping("/{id}")
     public TodoResponse update(
             @PathVariable Long id,
@@ -118,6 +120,7 @@ public class ExternalTodoController {
      * @param status   필터링할 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 전체
      * @return 키워드와 일치하는 Todo 목록
      */
+    @ApiDocs(title = "Todo 키워드 검색")
     @GetMapping("/find")
     public List<TodoResponse> findByKeyword(
             @RequestParam String keyword,
@@ -142,6 +145,7 @@ public class ExternalTodoController {
      * @body request 카테고리 포함 Todo 정보 (title, content, dueDate, priority, category)
      * @return 생성된 Todo 정보
      */
+    @ApiDocs(title = "카테고리 지정 Todo 생성")
     @PostMapping("/categorized")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse createCategorized(@RequestBody TodoCategorizedCreateRequest request) {
