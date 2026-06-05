@@ -49,18 +49,25 @@ public class ExternalTodoController {
      *
      * @param status        필터링 대상 상태값 (TODO / IN_PROGRESS / DONE), 미입력 시 모든 상태 합산
      * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계 (1~5 권장), 미입력 시 전체
+     * @param includeDone   완료(DONE) 항목 포함 여부, false 시 집계 대상에서 제외 (기본 true)
      * @return 상태별 Todo 집계 (total, done, pending)
      */
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
-            @RequestParam(required = false) Integer minPriority) {
+            @RequestParam(required = false) Integer minPriority,
+            @RequestParam(required = false, defaultValue = "true") boolean includeDone) {
         List<TodoResponse> targets = (status != null)
                 ? todoService.findAllByStatus(status)
                 : todoService.findAll();
         if (minPriority != null) {
             targets = targets.stream()
                     .filter(t -> t.getPriority() != null && t.getPriority() >= minPriority)
+                    .toList();
+        }
+        if (!includeDone) {
+            targets = targets.stream()
+                    .filter(t -> t.getStatus() != TodoStatus.DONE)
                     .toList();
         }
         long total = targets.size();
