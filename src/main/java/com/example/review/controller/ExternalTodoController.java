@@ -134,16 +134,20 @@ public class ExternalTodoController {
      * @apiScope external
      *
      * 카테고리(PERSONAL/WORK/STUDY/OTHER)를 함께 지정해 Todo 를 생성합니다.
-     * 카테고리 정보는 별도 분류·집계에 활용됩니다.
+     * 카테고리는 분류·집계 외에 카테고리별 마감 알림 발송에도 사용됩니다.
+     * dueDate 가 7일 이내인 경우 생성 즉시 슬랙 알림을 발송합니다.
      *
-     * @body request 카테고리 포함 Todo 정보 (title, content, dueDate, priority, category)
+     * @param notify  카테고리별 슬랙 알림 발송 여부 (기본값: true)
+     * @body  request 카테고리 포함 Todo 정보 (title, content, dueDate, priority, category)
      * @return 생성된 Todo 정보
      */
     @PostMapping("/categorized")
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoResponse createCategorized(@RequestBody TodoCategorizedCreateRequest request) {
+    public TodoResponse createCategorized(
+            @RequestBody TodoCategorizedCreateRequest request,
+            @RequestParam(required = false, defaultValue = "true") boolean notify) {
         TodoCreateRequest base = new TodoCreateRequest();
-        // category 는 향후 service 레이어 확장 시 활용
+        // category 와 notify 는 향후 service 레이어 확장 시 활용
         return todoService.create(base);
     }
 }
