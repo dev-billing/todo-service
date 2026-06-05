@@ -1,0 +1,17 @@
+# REST API Docs 자동화 — 도메인·게이트웨이·그룹 설정.
+# 로컬 /api-docs 명령이 md 생성 시 읽어 Domain 표 채움과 path 변환에 사용.
+
+# 단일 도메인. 모든 컨트롤러가 이 도메인을 공유.
+environments:
+  alpha: https://alpha-todo.example.com
+  real: https://todo.example.com
+
+# 게이트웨이 사용 안 함 (todo-service 는 직접 호출 가정)
+useGateway: false
+
+# 패키지별 도메인 분리 — report 패키지는 별도 도메인
+groups:
+  - packagePrefix: com.example.review.report
+    environments:
+      alpha: https://alpha-report.example.com
+      real: https://report.example.com

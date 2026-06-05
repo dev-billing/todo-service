@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.review.apidoc.ApiDocs;
 import com.example.review.dto.request.TodoCategorizedCreateRequest;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
@@ -33,6 +34,7 @@ public class ExternalTodoController {
      * @header X-Caller-Id    호출 시스템 식별자 (감사 로그 추적용)
      * @return 조회된 Todo 정보
      */
+    @ApiDocs(title = "Todo 단건 조회")
     @GetMapping("/{id}")
     public TodoResponse getById(
             @PathVariable Long id,
@@ -51,6 +53,7 @@ public class ExternalTodoController {
      * @param minPriority   이 값 이상의 우선순위를 가진 항목만 집계 (1~5 권장), 미입력 시 전체
      * @return 상태별 Todo 집계 (total, done, pending)
      */
+    @ApiDocs
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
