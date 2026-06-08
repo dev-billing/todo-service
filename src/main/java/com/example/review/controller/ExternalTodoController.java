@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.review.common.apidoc.ApiDocs;
 import com.example.review.dto.request.TodoCategorizedCreateRequest;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
@@ -20,6 +21,7 @@ public class ExternalTodoController {
 
     private final TodoService todoService;
 
+    @ApiDocs(title = "Todo 단건 조회")
     @GetMapping("/{id}")
     public TodoResponse getById(
             @PathVariable Long id,
@@ -28,6 +30,7 @@ public class ExternalTodoController {
         return todoService.findById(id);
     }
 
+    @ApiDocs
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
@@ -45,6 +48,7 @@ public class ExternalTodoController {
         return Map.of("total", total, "done", done, "pending", total - done);
     }
 
+    @ApiDocs(title = "Todo 생성")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
@@ -79,5 +83,10 @@ public class ExternalTodoController {
         TodoCreateRequest base = new TodoCreateRequest();
 
         return todoService.create(base);
+    }
+
+    @GetMapping("/random")
+    public TodoResponse random() {
+        return todoService.findAll().stream().findAny().orElse(null);
     }
 }
