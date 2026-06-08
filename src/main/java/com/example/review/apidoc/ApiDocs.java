@@ -6,23 +6,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * REST API Docs ìëí ëì ë©ìë íì.
+ * REST API Docs 자동화 대상 메서드 표시.
  *
- * ì´ ì´ë¸íì´ìì´ ë¶ì @*Mapping ë©ìëë ë¡ì»¬ /api-docs ëªë ¹ì¼ë¡ docs/ ëë í ë¦¬ì
- * md íì¼ê³¼ ë§¤íëì´ ìë ë¬¸ìíÂ·ì½ë ë¦¬ë·° íë¦ì í¬í¨ë©ëë¤.
+ * 이 어노테이션이 붙은 @*Mapping 메서드는 로컬 /api-docs 명령으로 docs/ 디렉토리의
+ * md 파일과 매핑되어 자동 문서화·코드 리뷰 흐름에 포함됩니다.
  *
  * <pre>
- *   {@literal @}ApiDocs(title = "Todo ë¨ê±´ ì¡°í")
+ *   {@literal @}ApiDocs(title = "Todo 단건 조회")
  *   {@literal @}GetMapping("/{id}")
  *   public TodoResponse getById(...) { ... }
  * </pre>
  *
  * <ul>
- *   <li>title ìì â docs/{slugify(title)}.md</li>
- *   <li>title ìì â docs/{method}-{slugify(url)}.md</li>
+ *   <li>title 있음 → docs/{slugify(title)}.md</li>
+ *   <li>title 없음 → docs/{method}-{slugify(url)}.md</li>
  * </ul>
  *
- * SOURCE retention ì´ë¼ ì»´íì¼ ê²°ê³¼ë¬¼ì ì ë¨ê³  ë°íì ìí¥ 0.
+ * SOURCE retention 이라 컴파일 결과물에 안 남고 런타임 영향 0.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.SOURCE)
