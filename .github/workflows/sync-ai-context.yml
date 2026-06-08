@@ -2,8 +2,9 @@ name: Sync AI Context
 
 on:
   # 자동 트리거 비활성화 — 필요 시 workflow_dispatch 로 수동 실행
-   push:
-     branches: [develop]
+#   push:
+#     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   sync:
