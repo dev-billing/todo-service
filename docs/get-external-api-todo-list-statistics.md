@@ -36,6 +36,7 @@
 | --- | ---- | --- | --- | --- |
 | status | N | TodoStatus | - | 필터링할 상태값 (`TODO` / `IN_PROGRESS` / `DONE`), 미입력 시 전체 |
 | minPriority | N | Integer | - | 이 값 이상의 우선순위를 가진 항목만 집계 (1~5 권장), 미입력 시 전체 |
+| includeDone | N | boolean | `true` | 완료(`DONE`) 항목 포함 여부 (추정) |
 
 ## Response
 

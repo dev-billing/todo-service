@@ -1,26 +1,24 @@
-# Todo 단건 조회
+# Todo 생성
 
 ## Description
 
-* 이건 내가 임의로 수정한거지롱
-* 지정한 ID 의 Todo 항목을 반환합니다.
-* 존재하지 않는 ID 요청 시 404 를 반환합니다.
-* `includeDeleted=true` 인 경우 soft delete 된 항목도 함께 조회합니다.
+* 새로운 Todo 항목을 생성합니다.
+* 생성에 성공하면 HTTP 201 (Created) 와 함께 생성된 Todo 정보를 반환합니다.
 
 ## API Info
 
 | 항목 | 값 |
 | --- | --- |
-| Path | /external/api/todo-list/{id} |
-| Method | `GET` |
+| Path | /external/api/todo-list/create |
+| Method | `POST` |
 | Content-Type | `application/json` |
 
 **Domain**
 
-| 환경 | URL                                  |
-| --- |--------------------------------------|
-| Alpha | https://custom-alpha-todo-service.com |
-| Real | https://custom-todo-service.com      |
+| 환경 | URL |
+| --- | --- |
+| Alpha | https://alpha-todo-service.com |
+| Real | https://todo-service.com |
 
 ## Request
 
@@ -30,19 +28,28 @@
 | --- | ---- | --- | --- |
 | clientOrigin | Y | String | 호출처(빌링개발팀에 문의) |
 | requestId | N | String | 요청 uuid (로그 추적용) |
-| X-Caller-Id | Y | String | 호출 시스템 식별자 (감사 로그 추적용) |
 
-### PathVariable
+### Body
 
-| 변수명 | 타입 | 설명 |
-| --- | --- | --- |
-| id | Long | 조회할 Todo 의 고유 식별자 |
+| 필드명 | 필수여부 | 타입 | 설명 |
+| --- | ---- | --- | --- |
+| title | Y | String | Todo 제목 (추정) |
+| content | N | String | Todo 상세 내용 |
+| dueDate | N | String | 마감일 (`yyyy-MM-dd`) |
+| priority | N | Integer | 우선순위 (1~5) (추정) |
+| tags | N | List<String> | 태그 목록 |
 
-### Parameters
+### Example
 
-| 파라미터 | 필수여부 | 타입 | 기본값 | 설명 |
-| --- | ---- | --- | --- | --- |
-| includeDeleted | N | boolean | `false` | `true` 면 삭제된 항목도 조회 |
+```json
+{
+  "title": "오늘 할 일 목록 정리",
+  "content": "1. 장보기 2. 청소",
+  "dueDate": "2026-05-10",
+  "priority": 3,
+  "tags": ["집안일", "주말"]
+}
+```
 
 ## Response
 
@@ -84,7 +91,7 @@
     "dueDate": "2026-05-10",
     "priority": 3,
     "createdAt": "2026-05-01T10:00:00",
-    "updatedAt": "2026-05-06T15:30:00"
+    "updatedAt": "2026-05-01T10:00:00"
   }
 }
 ```
@@ -92,7 +99,3 @@
 ## Error code
 
 * 공통 에러 코드 : https://nhnent.dooray.com/share/pages/WIcRkRY9RdSwwP9_l5OskA/3657213124062842835
-
-| 코드 | HTTP Status | 설명 |
-| --- | ---- | --- |
-| NOT_FOUND | 404 | 해당 ID 의 Todo 가 존재하지 않음 |
