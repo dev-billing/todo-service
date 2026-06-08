@@ -1,9 +1,9 @@
 name: API Doc - PR
 
-# 신규 REST API Docs 흐름.
-# - PR open/synchronize: 자동 draft 생성 안 함 (개발자가 로컬 /api-docs 로 생성)
-# - PR merge to develop: docs/*.md 를 Dooray 페이지로 동기화 (sync_docs_to_dooray.py)
-# - PR close (미merge): 별도 정리 작업 없음 (md 는 PR 머지 안 됐으면 어차피 develop 에 없음)
+# ì ê· REST API Docs íë¦.
+# - PR open/synchronize: ìë draft ìì± ì í¨ (ê°ë°ìê° ë¡ì»¬ /api-docs ë¡ ìì±)
+# - PR merge to develop: docs/*.md ë¥¼ Dooray íì´ì§ë¡ ëê¸°í (sync_docs_to_dooray.py)
+# - PR close (ë¯¸merge): ë³ë ì ë¦¬ ìì ìì (md ë PR ë¨¸ì§ ì ëì¼ë©´ ì´ì°¨í¼ develop ì ìì)
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dooray 호출 없이 미리보기만"
+        description: "Dooray í¸ì¶ ìì´ ë¯¸ë¦¬ë³´ê¸°ë§"
         required: false
         type: boolean
         default: false
