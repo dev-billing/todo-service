@@ -1,5 +1,6 @@
 package com.example.review.controller;
 
+import com.example.review.common.apidoc.ApiDocs;
 import com.example.review.dto.request.TodoCategorizedCreateRequest;
 import com.example.review.dto.request.TodoCreateRequest;
 import com.example.review.dto.request.TodoUpdateRequest;
@@ -20,6 +21,8 @@ public class ExternalTodoController {
 
     private final TodoService todoService;
 
+    // [시나리오 1] title 있는 @ApiDocs + 매칭 md
+    @ApiDocs(title = "Todo 단건 조회")
     @GetMapping("/{id}")
     public TodoResponse getById(
             @PathVariable Long id,
@@ -28,6 +31,8 @@ public class ExternalTodoController {
         return todoService.findById(id);
     }
 
+    // [시나리오 2] title 없는 @ApiDocs (method-url 파일명) + 매칭 md
+    @ApiDocs
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
@@ -45,6 +50,8 @@ public class ExternalTodoController {
         return Map.of("total", total, "done", done, "pending", total - done);
     }
 
+    // [시나리오 3] @ApiDocs 있는데 md 없음 — claude-review hint 검증
+    @ApiDocs(title = "Todo 생성")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoResponse create(@RequestBody TodoCreateRequest request) {
@@ -79,5 +86,11 @@ public class ExternalTodoController {
         TodoCreateRequest base = new TodoCreateRequest();
 
         return todoService.create(base);
+    }
+
+    // [시나리오 4] 신규 endpoint, @ApiDocs 미부착 — claude-review hint 검증
+    @GetMapping("/random")
+    public TodoResponse random() {
+        return todoService.findAll().stream().findAny().orElse(null);
     }
 }
