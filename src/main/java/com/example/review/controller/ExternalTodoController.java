@@ -30,11 +30,14 @@ public class ExternalTodoController {
         return todoService.findById(id);
     }
 
+    // [시나리오 B] 기존 @ApiDocs 메서드의 시그니처 변경 + 매칭 md 는 의도적으로 미수정
+    // → claude-review 가 "외부 인터페이스 변경 vs docs/*.md 미갱신" hint 띄워야
     @ApiDocs
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
-            @RequestParam(required = false) Integer minPriority) {
+            @RequestParam(required = false) Integer minPriority,
+            @RequestParam(required = false, defaultValue = "true") boolean includeDone) {
         List<TodoResponse> targets = (status != null)
                 ? todoService.findAllByStatus(status)
                 : todoService.findAll();
@@ -88,5 +91,16 @@ public class ExternalTodoController {
     @GetMapping("/random")
     public TodoResponse random() {
         return todoService.findAll().stream().findAny().orElse(null);
+    }
+
+    // [시나리오 A] @ApiDocs(scope="private") 명시 — URL 은 /external/ 인데 실제론 내부용
+    // sync 시 URL prefix 휴리스틱 무시하고 "private" (내부) 부모로 발행되어야
+    @ApiDocs(title = "Todo 디버그 정보", scope = "private")
+    @GetMapping("/debug/info")
+    public Map<String, Object> debugInfo() {
+        return Map.of(
+                "totalCount", (long) todoService.findAll().size(),
+                "service", "todo-service"
+        );
     }
 }
