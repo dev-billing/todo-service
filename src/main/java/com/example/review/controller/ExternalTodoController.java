@@ -34,7 +34,8 @@ public class ExternalTodoController {
     @GetMapping("/statistics")
     public Map<String, Long> getStatistics(
             @RequestParam(required = false) TodoStatus status,
-            @RequestParam(required = false) Integer minPriority) {
+            @RequestParam(required = false) Integer minPriority,
+            @RequestParam(required = false, defaultValue = "true") boolean includeDone) {
         List<TodoResponse> targets = (status != null)
                 ? todoService.findAllByStatus(status)
                 : todoService.findAll();
@@ -88,5 +89,14 @@ public class ExternalTodoController {
     @GetMapping("/random")
     public TodoResponse random() {
         return todoService.findAll().stream().findAny().orElse(null);
+    }
+
+    @ApiDocs(title = "Todo 디버그 정보", scope = "private")
+    @GetMapping("/debug/info")
+    public Map<String, Object> debugInfo() {
+        return Map.of(
+                "totalCount", (long) todoService.findAll().size(),
+                "service", "todo-service"
+        );
     }
 }
