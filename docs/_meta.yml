@@ -1,0 +1,4 @@
+environments:
+  Alpha: https://alpha-todo-service.com
+  Real: https://todo-service.com
+useGateway: false
