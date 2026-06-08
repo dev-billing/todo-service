@@ -19,30 +19,12 @@ public class TodoReportController {
 
     private final TodoService todoService;
 
-    /**
-     * Todo 일일 리포트
-     * @apiScope external
-     *
-     * 특정 상태의 Todo 건수를 일별로 집계한 리포트를 반환합니다.
-     * 리포팅·통계 도메인의 API 로, 일반 Todo API 와 다른 도메인을 사용합니다.
-     *
-     * @param status   집계할 상태값 (TODO / IN_PROGRESS / DONE)
-     * @return 상태별 집계 결과
-     */
     @GetMapping("/daily")
     public Map<String, Long> dailyReport(@RequestParam TodoStatus status) {
         List<TodoResponse> targets = todoService.findAllByStatus(status);
         return Map.of("total", (long) targets.size());
     }
 
-    /**
-     * Todo 우선순위 분포 리포트
-     * @apiScope external
-     *
-     * 전체 Todo 의 우선순위별 분포를 반환합니다.
-     *
-     * @return 우선순위별 건수 맵
-     */
     @GetMapping("/priority-distribution")
     public Map<Integer, Long> priorityDistribution() {
         return todoService.findAll().stream()
