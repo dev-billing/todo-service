@@ -67,7 +67,8 @@ public class ExternalTodoController {
     @GetMapping("/find")
     public List<TodoResponse> findByKeyword(
             @RequestParam String keyword,
-            @RequestParam(required = false) TodoStatus status) {
+            @RequestParam(required = false) TodoStatus status,
+            @RequestParam int page) {
         List<TodoResponse> source = (status != null)
                 ? todoService.findAllByStatus(status)
                 : todoService.findAll();
